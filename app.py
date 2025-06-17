@@ -1,6 +1,7 @@
 from flask import Flask, request, send_file
 from pypdf import PdfReader, PdfWriter
 import tempfile
+import os
 
 app = Flask(__name__)
 
@@ -22,5 +23,10 @@ def delete_pages():
 
     return send_file(temp_file.name, as_attachment=True, download_name='output.pdf', mimetype='application/pdf')
 
+@app.route('/')
+def home():
+    return "PDF Deletion API is running!"
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
