@@ -22,11 +22,3 @@ def delete_pages():
     temp_file.seek(0)
 
     return send_file(temp_file.name, as_attachment=True, download_name='output.pdf', mimetype='application/pdf')
-
-@app.route('/')
-def home():
-    return "PDF Deletion API is running!"
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
