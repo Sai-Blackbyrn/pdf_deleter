@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from pypdf import PdfReader, PdfWriter
 import tempfile
 import os
@@ -7,8 +7,16 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def delete_pages():
+    if 'file' not in request.files:
+        return jsonify({"error": "Missing file"}), 400
+    if 'pages' not in request.form:
+        return jsonify({"error": "Missing pages field"}), 400
+
     file = request.files['file']
-    delete_pages = list(map(int, request.form.get('pages', '').split(',')))
+    try:
+        delete_pages = list(map(int, request.form.get('pages', '').split(',')))
+    except ValueError:
+        return jsonify({"error": "Invalid page numbers"}), 400
 
     reader = PdfReader(file)
     writer = PdfWriter()
@@ -22,3 +30,7 @@ def delete_pages():
     temp_file.seek(0)
 
     return send_file(temp_file.name, as_attachment=True, download_name='output.pdf', mimetype='application/pdf')
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
