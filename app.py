@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/delete-pages', methods=['POST'])
+@app.route('/', methods=['POST'])
 def delete_pages():
     file = request.files['file']
     delete_pages = list(map(int, request.form.get('pages', '').split(',')))
